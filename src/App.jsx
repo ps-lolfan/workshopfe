@@ -6,23 +6,32 @@ import Login from './components/Login';
 import HomePage from './pages/HomePage'; // Import your protected homepage component
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
+import Register from './components/Register';
 
 function App() {
   return (
     <Routes>
       {/* Public route, accessible only if not authenticated */}
       <Route
-        path="/login"
+        path="/"
         element={
           <PublicRoute>
             <Login />
           </PublicRoute>
         }
       />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
 
       {/* Protected route */}
       <Route
-        path="/"
+        path="/home"
         element={
           <ProtectedRoute>
             <HomePage /> {/* Component you want to protect */}
