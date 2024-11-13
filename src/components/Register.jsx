@@ -1,29 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { login } from '../services/authService';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { register } from '../services/authService';
 import { Button, Form, Container, Row, Col, Alert } from 'react-bootstrap';
 
-const Login = () => {
+const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            navigate('/home');  // Redirect to homepage if already logged in
+    const handleRegister = async () => {
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            return;
         }
-    }, [navigate]);
 
-    const handleLogin = async () => {
         try {
-            const response = await login({ username, password });
-            localStorage.setItem('token', response.data.token);  // Save JWT token
+            const response = await register({ username, password });
             setError(null);
-            navigate('/home');  // Redirect to homepage after login
+            setSuccess('Registration successful! Please login.');
+            setUsername('');
+            setPassword('');
+            setConfirmPassword('');
+
+            setTimeout(() => {
+                navigate('/');  // Redirect to login page after successful registration
+            }, 2000);
         } catch (err) {
-            setError("Invalid username or password");
+            setError('Registration failed. Please try again.');
         }
     };
 
@@ -33,14 +39,16 @@ const Login = () => {
                 <Col md={6} lg={4} className="mx-auto">
                     <div className="card shadow-sm">
                         <div className="card-body">
-                            <h3 className="card-title text-center mb-4">Login</h3>
+                            <h3 className="card-title text-center mb-4">Register</h3>
 
                             {error && <Alert variant="danger">{error}</Alert>}
+                            {success && <Alert variant="success">{success}</Alert>}
 
                             <Form>
                                 <Form.Group controlId="formUsername" className="mb-3">
                                     <Form.Label>Username</Form.Label>
                                     <Form.Control
+                                        autoComplete='new-username'
                                         type="text"
                                         placeholder="Enter username"
                                         value={username}
@@ -51,6 +59,7 @@ const Login = () => {
                                 <Form.Group controlId="formPassword" className="mb-3">
                                     <Form.Label>Password</Form.Label>
                                     <Form.Control
+                                        autoComplete='new-password'
                                         type="password"
                                         placeholder="Enter password"
                                         value={password}
@@ -58,13 +67,23 @@ const Login = () => {
                                     />
                                 </Form.Group>
 
-                                <Button variant="primary" className="w-100" onClick={handleLogin}>
-                                    Login
+                                <Form.Group controlId="formConfirmPassword" className="mb-3">
+                                    <Form.Label>Confirm Password</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Confirm password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                    />
+                                </Form.Group>
+
+                                <Button variant="primary" className="w-100" onClick={handleRegister}>
+                                    Register
                                 </Button>
                             </Form>
 
                             <div className="text-center mt-3">
-                                <p>Don't have an account? <a href="/register">Register here</a></p>
+                                <p>Already have an account? <a href="/">Login here</a></p>
                             </div>
                         </div>
                     </div>
@@ -74,4 +93,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Register;
