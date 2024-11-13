@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getBooks, addBook, updateBook, deleteBook } from '../services/bookService';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Form } from 'react-bootstrap';  // For Bootstrap Modal and Form components
+import NavBar from '../components/NavBar';
 
 const HomePage = () => {
     const [books, setBooks] = useState([]);
@@ -72,24 +73,7 @@ const HomePage = () => {
     return (
         <div className="container">
             {/* Navigation Bar */}
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <div className="container-fluid">
-                    <a className="navbar-brand" href="#">Book Manager</a>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                    <div className="collapse navbar-collapse" id="navbarNav">
-                        <ul className="navbar-nav ms-auto">
-                            <li className="nav-item">
-                                <button className="btn btn-primary" onClick={() => setShowModal(true)}>Add Book</button>
-                            </li>
-                            <li className="nav-item">
-                                <button className="btn btn-secondary ms-2" onClick={handleLogout}>Logout</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+            <NavBar setShowModal={setShowModal} />
 
             {/* Main Content */}
             <h1 className="text-center my-4">Book List</h1>
@@ -116,12 +100,25 @@ const HomePage = () => {
                                 <td>{book.title}</td>
                                 <td>{book.author}</td>
                                 <td>
-                                    <button className="btn btn-warning btn-sm" onClick={() => { setBookToEdit(book); setShowModal(true); }}>Edit</button>
-                                    <button className="btn btn-danger btn-sm ms-2" onClick={() => handleDeleteBook(book.id)}>Delete</button>
+                                    <div className="d-flex flex-column flex-sm-row">
+                                        <button
+                                            className="btn btn-warning btn-sm mb-2 mb-sm-0"
+                                            onClick={() => { setBookToEdit(book); setShowModal(true); }}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="btn btn-danger btn-sm ms-0 ms-sm-2"
+                                            onClick={() => handleDeleteBook(book.id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
+
                 </table>
             )}
 
